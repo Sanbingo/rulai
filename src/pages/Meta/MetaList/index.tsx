@@ -11,12 +11,8 @@ export default () => {
     }, 3000);
   }, []);
   return (
-    <PageHeaderWrapper content="这是！" className={styles.main}>
-      <div style={{ paddingTop: 100, textAlign: 'center' }}>
-        <div>
-          222
-        </div>
-      </div>
+    <PageHeaderWrapper content="元数据列表" className={styles.main}>
+      <div>222</div>
     </PageHeaderWrapper>
   );
 };

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { Button } from 'antd';
 import 'jsoneditor/dist/jsoneditor.css'
 import styles from './index.less';
- 
+
 /**
  * JsonEditor
  * @param {object} json 用于绑定的json数据
@@ -14,20 +14,23 @@ import styles from './index.less';
  * @param {string} themeBgColor 为外部暴露修改主题色
  */
 class JsonEditor extends PureComponent {
+  state = {
+    isPreview: false
+  }
   onChange = () => {
     let value = this.jsoneditor.get()
     this.props.onChange && this.props.onChange(value)
     this.viewJsoneditor.set(value)
   }
- 
+
   getJson = () => {
     this.props.getJson && this.props.getJson(this.jsoneditor.get())
   }
- 
+
   onError = (errArr) => {
     this.props.onError && this.props.onError(errArr)
   }
- 
+
   initJsonEditor = () => {
     const options = {
       mode: 'code',
@@ -35,21 +38,21 @@ class JsonEditor extends PureComponent {
       onChange: this.onChange,
       onValidationError: this.onError
     };
- 
+
     this.jsoneditor = new JSONEditor(this.container, options)
-    this.jsoneditor.set(this.props.value)
+    this.jsoneditor.set(this.props.value || {})
   }
- 
+
   initViewJsonEditor = () => {
     const options = {
       mode: 'view'
     };
- 
+
     this.viewJsoneditor = new JSONEditor(this.viewContainer, options)
-    this.viewJsoneditor.set(this.props.value)
+    this.viewJsoneditor.set(this.props.value || {})
   }
- 
-  componentDidMount () {
+
+  componentDidMount() {
     this.initJsonEditor()
     this.initViewJsonEditor()
     // 设置主题色
@@ -58,36 +61,42 @@ class JsonEditor extends PureComponent {
     // this.viewContainer.querySelector('.jsoneditor-menu').style.backgroundColor = this.props.themeBgColor
     // this.viewContainer.querySelector('.jsoneditor').style.border = `thin solid ${this.props.themeBgColor}`
   }
- 
-  componentWillUnmount () {
+
+  componentWillUnmount() {
     if (this.jsoneditor) {
-      this.jsoneditor.destroy()
-      this.viewJsoneditor.destroy()
+      this.jsoneditor && this.jsoneditor.destroy()
+      this.viewJsoneditor && this.viewJsoneditor.destroy()
     }
   }
- 
+
   componentDidUpdate() {
-    if(this.jsoneditor) {
-      this.jsoneditor.update(this.props.value)
-      this.viewJsoneditor.update(this.props.value)
+    if (this.jsoneditor) {
+      this.jsoneditor.update(this.props.value || {})
+      this.viewJsoneditor.update(this.props.value || {})
     }
   }
- 
+
   render() {
     return (
-    <div>
+      <div>
         <div>
-            <Button onClick={this.getJson}>更新</Button>
+          {/* <Button onClick={this.getJson}>更新</Button> */}
+          <Button onClick={() => { this.setState({ isPreview: !this.state.isPreview }) }}>{this.state.isPreview ? '关闭预览' : '打开预览'}</Button>
         </div>
-      <div className={styles.jsonEditWrap}>
-        <div className={styles.jsoneditorReactContainer} ref={elem => this.container = elem} />
-        <div className={styles.jsoneditorReactContainer} ref={elem => this.viewContainer = elem} />
+        <div className={styles.jsonEditWrap}>
+          <div style={{
+            width: this.state.isPreview ? '50%' : '100%'
+          }}
+            className={styles.jsoneditorReactContainer} ref={elem => this.container = elem} />
+          <div style={{
+            display: this.state.isPreview ? '' : 'none',
+          }} className={styles.jsoneditorReactContainer} ref={elem => this.viewContainer = elem} />
+        </div>
       </div>
-    </div>
     );
   }
 }
- 
+
 JsonEditor.propTypes = {
   json: PropTypes.object,
   onChange: PropTypes.func,
@@ -95,5 +104,5 @@ JsonEditor.propTypes = {
   onError: PropTypes.func,
   themeBgColor: PropTypes.string
 }
- 
+
 export default JsonEditor

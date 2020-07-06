@@ -71,12 +71,6 @@ export default defineConfig({
               ],
             },
             {
-              name: 'list.table-list',
-              icon: 'table',
-              path: '/list',
-              component: './ListTableList',
-            },
-            {
               name: 'meta',
               icon: 'smile',
               path: '/meta',
@@ -86,15 +80,8 @@ export default defineConfig({
                   name: 'meta.list',
                   icon: 'smile',
                   path: '/meta/list',
-                  component: './Meta/MetaList',
-                },
-                {
-                  name: 'meta.setting',
-                  icon: 'smile',
-                  path: '/meta/setting',
-                  component: './meta/setting',
-                  hideChildrenInMenu: true
-                },
+                  component: './Meta/MetaList/meta-index',
+                }
               ],
             },
             {
